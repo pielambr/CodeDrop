@@ -37,13 +37,11 @@ if (isset($_GET) && key($_GET)) {
         </header>
         <main>
             <pre>
-                <code>
-                    <?php
-                        $content = fread($snippet, filesize("snippets/" . $file . ".txt"));
-                        echo htmlspecialchars(utf8_encode($content));
-                        fclose($snippet);
-                    ?>
-                </code>
+                <?php
+                    $content = fread($snippet, filesize("snippets/" . $file . ".txt"));
+                    echo "<code>" . htmlspecialchars(utf8_encode($content)) . "</code>";
+                    fclose($snippet);
+                ?>
             </pre>
         </main>
     <?php } ?>
