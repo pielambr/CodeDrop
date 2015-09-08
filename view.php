@@ -1,22 +1,19 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
+
+$client = new Predis\Client();
+
 $exists = false;
 if (isset($_GET) && key($_GET)) {
-    $file = key($_GET);
-    if (file_exists("snippets/" . $file . ".txt")
-        && strpos($file, '\\') === false
-        && strpos($file, '/') === false
-        && strpos($file, '.') === false
-    ) {
-        $snippet = fopen("snippets/" . $file . ".txt", "r");
-        $exists = true;
-    }
+    $filename = key($_GET);
+    $exists = $client->exists($filename);
 }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>CodeDrop</title>
-    <link rel="stylesheet" href="kickstart.css" />
+    <link rel="stylesheet" href="kickstart.css"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/monokai_sublime.min.css">
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
@@ -38,9 +35,8 @@ if (isset($_GET) && key($_GET)) {
         <main>
             <pre>
                 <?php
-                    $content = fread($snippet, filesize("snippets/" . $file . ".txt"));
-                    echo "<code>" . htmlspecialchars(utf8_encode($content)) . "</code>";
-                    fclose($snippet);
+                $content = $client->get($filename);
+                echo "<code>" . htmlspecialchars(utf8_encode($content)) . "</code>";
                 ?>
             </pre>
         </main>
