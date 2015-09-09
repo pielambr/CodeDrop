@@ -1,0 +1,2 @@
+Install the [predis](https://github.com/nrk/predis) dependency using the command `composer install`.
+You can edit the expiry time (default `1 hour`) and maximum number of characters (default `50.000`) in `upload.php`.

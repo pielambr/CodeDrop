@@ -1,20 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Pieterjan Lambrecht
- * Date: 22/05/15
- * Time: 20:47
- */
-if(isset($_POST["snippet"])){
+require __DIR__ . '/vendor/autoload.php';
+
+if (isset($_POST["snippet"])) {
     $code = $_POST["snippet"];
-    if(strlen($code) > 50000 || strlen($code) < 0){
+    if (strlen($code) > 50000 || strlen($code) < 0) {
         header("Location: index.php?err=413");
         die();
     }
     $filename = createFilename();
-    $snippet_file = fopen("snippets/" . $filename . ".txt", "w");
-    fwrite($snippet_file, $code);
-    fclose($snippet_file);
+
+    $client = new Predis\Client();
+
+    $client->set($filename, $code);
+    $client->expire($filename, 60 * 60);    // Expire one hour after setting
     header("Location: view.php?" . $filename);
     die();
 } else {
@@ -22,11 +20,12 @@ if(isset($_POST["snippet"])){
     die();
 }
 
-function createFilename() {
+function createFilename()
+{
     // http://stackoverflow.com/questions/19017694/1line-php-random-string-generator
-    $name = substr( "abcdefghijklmnopqrstuvwxyz" ,mt_rand( 0 ,25 ) ,1 ) .substr( md5( time( ) ) ,1 );
+    $name = substr("abcdefghijklmnopqrstuvwxyz", mt_rand(0, 25), 1) . substr(md5(time()), 1);
     // Check if file already exists
-    if(!file_exists("snippets/" . $name)){
+    if (!file_exists("snippets/" . $name)) {
         return $name;
     } else {
         return createFilename();

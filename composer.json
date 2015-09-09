@@ -1,0 +1,18 @@
+{
+    "name": "pielambr/code-drop",
+    "description": "Self-hosted pastebin alternative for code",
+    "require": {
+        "predis/predis": "^1.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pieterjan Lambrecht",
+            "email": "me@pielambr.be"
+        },
+        {
+            "name": "Casper Van Gheluwe",
+            "email": "me@caspervg.net"
+        }
+    ]
+}

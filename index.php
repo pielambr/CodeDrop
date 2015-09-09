@@ -1,11 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Pieterjan Lambrecht
- * Date: 28/04/15
- * Time: 11:07
- */
-?>
 <!DOCTYPE html>
 <html>
 <head>
