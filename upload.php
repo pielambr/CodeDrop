@@ -1,15 +1,16 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 
+use Rhumsaa\Uuid\Uuid;
+
 if (isset($_POST["snippet"])) {
     $code = $_POST["snippet"];
     if (strlen($code) > 50000 || strlen($code) < 0) {
         header("Location: index.php?err=413");
         die();
     }
-    $filename = createFilename();
-
     $client = new Predis\Client();
+    $filename = randomUniqueKey($client);
 
     $client->set($filename, $code);
     $client->expire($filename, 60 * 60);    // Expire one hour after setting
@@ -20,14 +21,13 @@ if (isset($_POST["snippet"])) {
     die();
 }
 
-function createFilename()
+function randomUniqueKey($client)
 {
-    // http://stackoverflow.com/questions/19017694/1line-php-random-string-generator
-    $name = substr("abcdefghijklmnopqrstuvwxyz", mt_rand(0, 25), 1) . substr(md5(time()), 1);
-    // Check if file already exists
-    if (!file_exists("snippets/" . $name)) {
-        return $name;
-    } else {
-        return createFilename();
+    $uuid = Uuid::uuid4();
+
+    while ($client->exists($uuid)) {
+        $uuid = Uuid::uuid4();
     }
+
+    return $uuid;
 }
